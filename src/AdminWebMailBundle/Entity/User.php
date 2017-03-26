@@ -4,16 +4,21 @@ namespace AdminWebMailBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\UserRepository")
  * @ORM\Table(name="virtual_users")
  */
 class User
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="user")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $domain;
 
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -27,11 +32,6 @@ class User
      */
     private $email;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="user")
-     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $domain;
 
 
 

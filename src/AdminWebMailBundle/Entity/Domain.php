@@ -1,10 +1,10 @@
 <?php
 namespace AdminWebMailBundle\Entity;
-
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\DateRepository")
  * @ORM\Table(name="virtual_domains")
  */
 class Domain
@@ -13,7 +13,7 @@ class Domain
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -23,12 +23,12 @@ class Domain
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Alias", mappedBy="domain")
+     * @ORM\OneToMany(targetEntity="AdminWebMailBundle\Entity\Alias", mappedBy="Domain")
      */
     private $aliases;
 
     /**
-     * @ORM\OneToMany(targetEntity="User", mappedBy="domain")
+     * @ORM\OneToMany(targetEntity="AdminWebMailBundle\Entity\User", mappedBy="Domain")
      */
     private $users;
 
@@ -36,6 +36,14 @@ class Domain
 
 
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->aliases = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -138,13 +146,4 @@ class Domain
     {
         return $this->users;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->aliases = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
 }
