@@ -1,36 +1,46 @@
 <?php
+
 namespace AdminWebMailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Alias
+ *
  * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\AliasRepository")
  * @ORM\Table(name="virtual_aliases")
  */
 class Alias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="alias")
-     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $domain;
-
-    /**
-     * @ORM\Id
+     * @var int
+     *
      * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(name="source", type="string", length=100)
      */
     private $source;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(name="destination", type="string", length=100)
      */
     private $destination;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Domain")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $domain;
+
+
+
+
+
 
 
 
