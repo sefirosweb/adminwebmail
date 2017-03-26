@@ -3,11 +3,30 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-table.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/bootstrap-editable.css') }}">
 {% endblock %}
 
 {% block body %}
     <h1>Hello World!</h1>
-    <table id="table"></table>
+    <table id="table"
+           data-toolbar="#toolbar"
+           data-search="true"
+           data-show-refresh="true"
+           data-show-toggle="true"
+           data-show-columns="true"
+
+           data-show-export="true"
+
+           data-minimum-count-columns="1"
+           data-show-pagination-switch="true"
+           data-pagination="true"
+           data-id-field="id"
+           data-page-list="[10, 25, 50, 100, ALL]"
+           data-show-footer="false"
+
+           data-url="{{ path('get_users') }}"
+    >
+    </table>
 {% endblock %}
 
 
@@ -15,20 +34,49 @@
     {{ parent() }}
     <script src="{{ asset('/js/bootstrap-table.min.js') }}"></script>
     <script src="{{ asset('/locale/bootstrap-table-es-ES.js') }}"></script>
+    <script src="{{ asset('/js/bootstrap-table-editable.js') }}"></script>
+    <script src="{{ asset('/js/bootstrap-editable.js') }}"></script>
 
     <script>
+        var $table = $('#table'),
+                $remove = $('#remove'),
+                selections = [];
+
         $('#table').bootstrapTable({
-            url: '{{ path('get_users') }}',
             columns: [{
                 field: 'id',
-                title: 'ID'
+                title: 'ID',
+                sortable: true,
+                align: 'center'
             }, {
                 field: 'email',
-                title: 'Email'
+                title: 'Email',
+                sortable: true,
+                editable: {
+                    type: 'text',
+                    title: 'Email Address',
+                    validate: function (value) {
+                        value = $.trim(value);
+                        if (!value) {
+                            return 'This field is required';
+                        }
+                        if (!/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(value)) {
+                            return 'Enter valid mail address'
+                        }
+                        var data = $table.bootstrapTable('getData'),
+                                index = $(this).parents('tr').data('index');
+                        console.log(data[index]);
+                        return '';
+                    }
+                },
+                align: 'center'
+
             }, {
                 field: 'domain',
-                title: 'Domain'
-            }, ]
+                title: 'Domain',
+                sortable: true,
+                align: 'center'
+            },]
         });
     </script>
 {% endblock %}
