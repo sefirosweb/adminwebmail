@@ -1,10 +1,10 @@
-admin_web_mail_homepage:
-    path:     /
-    defaults: { _controller: AdminWebMailBundle:Main:index }
-
 security_login:
     path:     /login
     defaults: { _controller: AdminWebMailBundle:Security:Login }
 
 security_logout:
     path:     /logout
+
+admin_web_mail_homepage:
+    path:     /
+    defaults: { _controller: AdminWebMailBundle:Main:index }

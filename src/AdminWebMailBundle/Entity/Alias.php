@@ -12,15 +12,10 @@ class Alias
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Domain", inversedBy="alias")
-     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $domain_id;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -32,22 +27,21 @@ class Alias
      */
     private $destination;
 
-//*************
-
-
     /**
-     * Set id
-     *
-     * @param integer $id
-     *
-     * @return Alias
+     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="alias")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    public function setId($id)
-    {
-        $this->id = $id;
+    private $domain;
 
-        return $this;
-    }
+
+
+
+
+
+
+
+
+
 
     /**
      * Get id
@@ -108,26 +102,26 @@ class Alias
     }
 
     /**
-     * Set domainId
+     * Set domain
      *
-     * @param \AdminWebMailBundle\Entity\Domain $domainId
+     * @param \AdminWebMailBundle\Entity\Domain $domain
      *
      * @return Alias
      */
-    public function setDomainId(\AdminWebMailBundle\Entity\Domain $domainId = null)
+    public function setDomain(\AdminWebMailBundle\Entity\Domain $domain = null)
     {
-        $this->domain_id = $domainId;
+        $this->domain = $domain;
 
         return $this;
     }
 
     /**
-     * Get domainId
+     * Get domain
      *
      * @return \AdminWebMailBundle\Entity\Domain
      */
-    public function getDomainId()
+    public function getDomain()
     {
-        return $this->domain_id;
+        return $this->domain;
     }
 }

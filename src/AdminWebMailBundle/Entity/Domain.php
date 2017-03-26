@@ -12,7 +12,8 @@ class Domain
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -21,25 +22,30 @@ class Domain
      */
     private $name;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Alias", mappedBy="virtual_domains")
-     */
-    private $alias;
-
-    //***********
 
     /**
-     * Set id
-     *
-     * @param integer $id
-     *
-     * @return Domain
+     * @ORM\OneToMany(targetEntity="Alias", mappedBy="domain")
      */
-    public function setId($id)
+    private $aliases;
+
+    /**
+     * @ORM\OneToMany(targetEntity="User", mappedBy="domain")
+     */
+    private $users;
+
+
+
+
+
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        $this->id = $id;
-
-        return $this;
+        $this->aliases = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -77,26 +83,70 @@ class Domain
     }
 
     /**
-     * Set alias
+     * Add alias
      *
      * @param \AdminWebMailBundle\Entity\Alias $alias
      *
      * @return Domain
      */
-    public function setAlias(\AdminWebMailBundle\Entity\Alias $alias = null)
+    public function addAlias(\AdminWebMailBundle\Entity\Alias $alias)
     {
-        $this->alias = $alias;
+        $this->aliases[] = $alias;
 
         return $this;
     }
 
     /**
-     * Get alias
+     * Remove alias
      *
-     * @return \AdminWebMailBundle\Entity\Alias
+     * @param \AdminWebMailBundle\Entity\Alias $alias
      */
-    public function getAlias()
+    public function removeAlias(\AdminWebMailBundle\Entity\Alias $alias)
     {
-        return $this->alias;
+        $this->aliases->removeElement($alias);
+    }
+
+    /**
+     * Get aliases
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
+    }
+
+    /**
+     * Add user
+     *
+     * @param \AdminWebMailBundle\Entity\User $user
+     *
+     * @return Domain
+     */
+    public function addUser(\AdminWebMailBundle\Entity\User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove user
+     *
+     * @param \AdminWebMailBundle\Entity\User $user
+     */
+    public function removeUser(\AdminWebMailBundle\Entity\User $user)
+    {
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUsers()
+    {
+        return $this->users;
     }
 }

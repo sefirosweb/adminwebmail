@@ -1,8 +1,35 @@
 {% extends 'AdminWebMailBundle::base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('/css/bootstrap-table.min.css') }}">
+{% endblock %}
+
 {% block body %}
     <h1>Hello World!</h1>
+    <table id="table"></table>
+{% endblock %}
 
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('/js/bootstrap-table.min.js') }}"></script>
+    <script src="{{ asset('/locale/bootstrap-table-es-ES.js') }}"></script>
+
+    <script>
+        $('#table').bootstrapTable({
+            url: 'data1.json',
+            columns: [{
+                field: 'id',
+                title: 'Item ID'
+            }, {
+                field: 'name',
+                title: 'Item Name'
+            }, {
+                field: 'price',
+                title: 'Item Price'
+            }, ]
+        });
+    </script>
 {% endblock %}
 

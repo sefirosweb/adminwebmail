@@ -12,44 +12,38 @@ class User
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $domain_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $admin;
-
-    /**
-     * @ORM\Column(type="string", length=106)
+     * @ORM\Column(name="password", type="string", length=106)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=120, name="email")
+     * @ORM\Column(name="email", type="string", length=120)
      */
-    private $username;
-
+    private $email;
 
     /**
-     * Set id
-     *
-     * @param integer $id
-     *
-     * @return User
+     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="user")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    public function setId($id)
-    {
-        $this->id = $id;
+    private $domain;
 
-        return $this;
-    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Get id
@@ -59,54 +53,6 @@ class User
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set domainId
-     *
-     * @param integer $domainId
-     *
-     * @return User
-     */
-    public function setDomainId($domainId)
-    {
-        $this->domain_id = $domainId;
-
-        return $this;
-    }
-
-    /**
-     * Get domainId
-     *
-     * @return integer
-     */
-    public function getDomainId()
-    {
-        return $this->domain_id;
-    }
-
-    /**
-     * Set admin
-     *
-     * @param integer $admin
-     *
-     * @return User
-     */
-    public function setAdmin($admin)
-    {
-        $this->admin = $admin;
-
-        return $this;
-    }
-
-    /**
-     * Get admin
-     *
-     * @return integer
-     */
-    public function getAdmin()
-    {
-        return $this->admin;
     }
 
     /**
@@ -134,26 +80,50 @@ class User
     }
 
     /**
-     * Set username
+     * Set email
      *
-     * @param string $username
+     * @param string $email
      *
      * @return User
      */
-    public function setUsername($username)
+    public function setEmail($email)
     {
-        $this->username = $username;
+        $this->email = $email;
 
         return $this;
     }
 
     /**
-     * Get username
+     * Get email
      *
      * @return string
      */
-    public function getUsername()
+    public function getEmail()
     {
-        return $this->username;
+        return $this->email;
+    }
+
+    /**
+     * Set domain
+     *
+     * @param \AdminWebMailBundle\Entity\Domain $domain
+     *
+     * @return User
+     */
+    public function setDomain(\AdminWebMailBundle\Entity\Domain $domain = null)
+    {
+        $this->domain = $domain;
+
+        return $this;
+    }
+
+    /**
+     * Get domain
+     *
+     * @return \AdminWebMailBundle\Entity\Domain
+     */
+    public function getDomain()
+    {
+        return $this->domain;
     }
 }
