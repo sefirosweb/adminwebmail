@@ -3,6 +3,7 @@ namespace AdminWebMailBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="virtual_users")
@@ -32,8 +33,6 @@ class User
      * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $domain;
-
-
 
 
 

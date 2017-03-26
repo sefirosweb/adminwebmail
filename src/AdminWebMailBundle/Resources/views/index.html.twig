@@ -18,16 +18,16 @@
 
     <script>
         $('#table').bootstrapTable({
-            url: 'data1.json',
+            url: '{{ path('get_users') }}',
             columns: [{
                 field: 'id',
-                title: 'Item ID'
+                title: 'ID'
             }, {
-                field: 'name',
-                title: 'Item Name'
+                field: 'email',
+                title: 'Email'
             }, {
-                field: 'price',
-                title: 'Item Price'
+                field: 'domain',
+                title: 'Domain'
             }, ]
         });
     </script>

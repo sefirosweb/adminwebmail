@@ -4,10 +4,6 @@ namespace AdminWebMailBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 class MainController extends Controller
 {
@@ -18,41 +14,49 @@ class MainController extends Controller
 
     public function getDomainsJSONAction()
     {
+        $em = $this->getDoctrine()->getManager();
+        //$domains = $em->getRepository('AdminWebMailBundle:Domain')->findAll();
+        $domains = $em->createQueryBuilder()
+            ->select('d.id, d.name')
+            ->from('AdminWebMailBundle:Domain', 'd')
+            ->getQuery()
+            ->getResult();
 
+        $serializer = $this->container->get('serializer');
+
+        $data = $serializer->serialize($domains, 'json');
+        return new Response($data);
     }
 
     public function getAliasesJSONAction()
     {
+        $em = $this->getDoctrine()->getManager();
+        //$aliases = $em->getRepository('AdminWebMailBundle:Alias')->findAll();
+        $aliases = $em->createQuery(
+            'SELECT a.id, a.source, a.destination
+            FROM AdminWebMailBundle:Alias a'
+        )->getResult();
 
+        $serializer = $this->container->get('serializer');
+
+        $data = $serializer->serialize($aliases, 'json');
+        return new Response($data);
     }
 
-    public function getUsersAction()
+    public function getUsersJSONAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $users = $em->getRepository('AdminWebMailBundle:User')->findAll();
+        //$users = $em->getRepository('AdminWebMailBundle:User')->findAll();
 
-        $arrays = $users->toArray();
-        $fields = array_merge(
-            $em->getClassMetadata('AdminWebMailBundle:User')->getFieldNames()
-            , $em->getClassMetadata('AdminWebMailBundle:User')->getAssociationNames()
-        );
+        $users = $em->createQueryBuilder()
+            ->select('u.id, u.email, d.name AS domain')
+            ->from('AdminWebMailBundle:User', 'u')
+            ->join('u.domain', 'd')
+            ->getQuery()->getArrayResult();
 
-        foreach ($users as $key => $user) {
-            foreach ($user as $field) {
-                $temp[] = $user->getId();
-            }
-            unset($temp);
-        }
-
-
-        return $this->responeJSON($fields);
-    }
-
-    private function responeJSON($data)
-    {
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        $serializer = $this->container->get('serializer');
+        $data = $serializer->serialize($users, 'json');
+        return new Response($data);
     }
 
 
