@@ -8,7 +8,10 @@ class MainController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('AdminWebMailBundle::index.html.twig');
+        $users = $this->getDoctrine()
+            ->getRepository('AdminWebMailBundle:User')
+            ->find(1);
+        return $this->render('AdminWebMailBundle::index.html.twig',array('users' => $users));
     }
 
 
