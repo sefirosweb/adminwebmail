@@ -10,27 +10,31 @@ use Doctrine\ORM\Mapping as ORM;
 class Alias
 {
     /**
+     * @ORM\Id
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(name="source", type="string", length=100)
+     */
+    private $source;
+
+    /**
+     * @ORM\Column(name="destination", type="string", length=100)
+     */
+    private $destination;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Domain", inversedBy="alias")
      * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $domain;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $source;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $destination;
+
 
 
 

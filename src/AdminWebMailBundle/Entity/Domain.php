@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Domain
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
@@ -23,14 +22,30 @@ class Domain
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="AdminWebMailBundle\Entity\Alias", mappedBy="Domain")
+     * @ORM\OneToMany(targetEntity="Alias", mappedBy="Domain")
      */
     private $aliases;
 
     /**
-     * @ORM\OneToMany(targetEntity="AdminWebMailBundle\Entity\User", mappedBy="Domain")
+     * @ORM\OneToMany(targetEntity="User", mappedBy="Domain")
      */
     private $users;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

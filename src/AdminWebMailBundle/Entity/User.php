@@ -10,15 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 class User
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="user")
-     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $domain;
-
-    /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -31,6 +25,19 @@ class User
      * @ORM\Column(name="email", type="string", length=120)
      */
     private $email;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="user")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $domain;
+
+
+
+
+
+
+
 
 
 
