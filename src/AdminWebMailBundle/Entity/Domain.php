@@ -22,7 +22,6 @@ class Domain
      */
     private $name;
 
-
     /**
      * @ORM\OneToMany(targetEntity="Alias", mappedBy="domain")
      */
@@ -37,16 +36,6 @@ class Domain
 
 
 
-
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->aliases = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Get id
@@ -149,4 +138,13 @@ class Domain
     {
         return $this->users;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->aliases = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
 }
