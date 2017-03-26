@@ -15,7 +15,7 @@ class MainController extends Controller
     public function getDomainsJSONAction()
     {
         $em = $this->getDoctrine()->getManager();
-        //$domains = $em->getRepository('AdminWebMailBundle:Domain')->findAll();
+        $domains = $em->getRepository('AdminWebMailBundle:Domain')->findAll();
         $domains = $em->createQueryBuilder()
             ->select('d.id, d.name')
             ->from('AdminWebMailBundle:Domain', 'd')
@@ -32,10 +32,11 @@ class MainController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         //$aliases = $em->getRepository('AdminWebMailBundle:Alias')->findAll();
-        $aliases = $em->createQuery(
-            'SELECT a.id, a.source, a.destination
-            FROM AdminWebMailBundle:Alias a'
-        )->getResult();
+        $aliases = $em->createQueryBuilder()
+            ->select('a.id, a.source, a.destination')
+            ->from('AdminWebMailBundle:Alias', 'a')
+            ->getQuery()
+            ->getResult();
 
         $serializer = $this->container->get('serializer');
 
