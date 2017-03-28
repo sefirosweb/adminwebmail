@@ -6,50 +6,122 @@
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-table.min.css') }}">
     <!--Editable POPUP-->
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-editable.css') }}">
-    <!--Editable ROW-->
-    <link rel="stylesheet" href="{{ asset('/css/bootstrap-editable.css') }}">
 
 {% endblock %}
 
 {% block body %}
     <h1>Hello World!</h1>
-    <table id="table"
-           data-toolbar="#toolbar"
-           data-search="true"
-           data-show-refresh="true"
-           data-show-toggle="true"
-           data-show-columns="true"
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="toolbar" disabled="disabled">
+                <button id="addMailBtn" class="btn btn-success">Add Mail</button>
+            </div>
+            <table id="table"
+                   data-toolbar="#toolbar"
+                   data-search="true"
+                   data-show-refresh="true"
+                   data-show-toggle="true"
+                   data-show-columns="true"
 
-           data-show-export="true"
+                   data-show-export="true"
+                   data-export-types="['txt','csv','excel','png','pdf']"
+                   data-export-data-type="all"
 
-           data-minimum-count-columns="1"
-           data-show-pagination-switch="true"
-           data-pagination="true"
-           data-id-field="id"
-           data-page-list="[10, 25, 50, 100, ALL]"
-           data-show-footer="false"
+                   data-minimum-count-columns="1"
+                   data-show-pagination-switch="true"
+                   data-pagination="true"
+                   data-id-field="id"
+                   data-page-list="[10, 25, 50, 100, ALL]"
+                   data-show-footer="false"
+                   data-url="{{ path('get_users') }}"
+            >
+            </table>
+        </div>
+    </div>
 
-           data-url="{{ path('get_users') }}"
-    >
-    </table>
+
+    <!--Modals-->
+
+    <!-- Modal Add Mail -->
+    <div id="addMailModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Insert info</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Email address</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                        <input id="newEmailText" type="email" class="form-control" placeholder="Email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Password</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                        <input id="newPasswordText1" type="password" class="form-control" placeholder="Email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Repeat Password</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                        <input id="newPasswordText2" type="password" class="form-control" placeholder="Email">
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" style="float:left;" id="createMailBtn">Create Mail</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!--!End Modals-->
 {% endblock %}
 
 
 {% block javascripts %}
     {{ parent() }}
     <!--Basic Table-->
-    <script src="{{ asset('/js/bootstrap-table.min.js') }}"></script>
-    <script src="{{ asset('/locale/bootstrap-table-es-ES.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/bootstrap-table.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/locale/bootstrap-table-es-ES.js') }}"></script>
     <!--Editable POPUP-->
-    <script src="{{ asset('/js/bootstrap-table-editable.js') }}"></script>
-    <script src="{{ asset('/js/bootstrap-editable.js') }}"></script>
-
+    <script type="text/javascript" src="{{ asset('/js/bootstrap-table-editable.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/bootstrap-editable.js') }}"></script>
+    <!--Export-->
+    <script type="text/javascript" src="{{ asset('/libs/FileSaver/FileSaver.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/libs/js-xlsx/xlsx.core.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/libs/jsPDF/jspdf.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/libs/html2canvas/html2canvas.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/tableExport.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/bootstrap-table-export.js') }}"></script>
 
     <script>
         $(document).ready(function () {
+            var $domains = JSON.parse('{{(domains|json_encode|raw)}}');
 
             var $table = $('#table'), $remove = $('#remove'), selections = [];
-
             $('#table').bootstrapTable({
                 columns: [{
                     field: 'id',
@@ -69,7 +141,7 @@
                             if (!value) {
                                 return 'This field is required';
                             }
-                            if (!/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(value)) {
+                            if (!checkDomain(value)) {
                                 return 'Enter valid mail address'
                             }
                             $table.bootstrapTable('showLoading');
@@ -77,7 +149,7 @@
                             console.log(data[index]);
                             console.log("Added: " + value);
                             $table.bootstrapTable('hideLoading');
-                            return 'A';
+                            return '';
                         }
                     },
                     align: 'center'
@@ -89,7 +161,7 @@
                     editable: {
                         type: 'select',
                         title: 'Email Address',
-                        source: '{{(domains|json_encode|raw)}}',
+                        source: $domains,
                         validate: function (value) {
                             console.log("Value inserted: " + value);
                             return '';
@@ -99,7 +171,32 @@
                 },]
             });
 
+
+            $("#addMailBtn").click(function () {
+                $('#addMailModal').modal('show');
+            });
+
+
+            $("#createMailBtn").click(function () {
+                if (checkDomain($("#newEmailText").val())) {
+                    console.log("hoHead");
+                } else {
+                    console.log("Error");
+                }
+            });
+
+            function checkDomain(mail) {
+                var validMail = new RegExp(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/);
+                for (var i = 0, len = $domains.length; i < len; i++) {
+                    if ((new RegExp('(@' + $domains[i]["text"] + ')$').test(mail)) && ((validMail.test(mail)))) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         });
+
     </script>
 {% endblock %}
 
