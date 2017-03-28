@@ -9,21 +9,32 @@ class MainController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('AdminWebMailBundle::index.html.twig');
+        $domains_raw = $this->getDomains();
+        foreach ($domains_raw as $domain) {
+            $domains[] = array(
+                "value" => $domain['id'],
+                "text" => $domain['name']
+            );
+        }
+        return $this->render('AdminWebMailBundle::index.html.twig', array('domains' => $domains));
     }
 
-    public function getDomainsJSONAction()
+    private function getDomains()
     {
         $em = $this->getDoctrine()->getManager();
-        $domains = $em->getRepository('AdminWebMailBundle:Domain')->findAll();
+        //$domains = $em->getRepository('AdminWebMailBundle:Domain')->findAll();
         $domains = $em->createQueryBuilder()
             ->select('d.id, d.name')
             ->from('AdminWebMailBundle:Domain', 'd')
             ->getQuery()
             ->getResult();
+        return $domains;
+    }
 
+    public function getDomainsJSONAction()
+    {
+        $domains = $this->getDomains();
         $serializer = $this->container->get('serializer');
-
         $data = $serializer->serialize($domains, 'json');
         return new Response($data);
     }
@@ -50,7 +61,7 @@ class MainController extends Controller
         //$users = $em->getRepository('AdminWebMailBundle:User')->findAll();
 
         $users = $em->createQueryBuilder()
-            ->select('u.id, u.email, d.name AS domain')
+            ->select('u.id, u.email, d.id AS domain')
             ->from('AdminWebMailBundle:User', 'u')
             ->join('u.domain', 'd')
             ->getQuery()->getArrayResult();
