@@ -6,8 +6,11 @@
         {% block title %}Admin webmail pannel{% endblock %}
     </title>
     {% block stylesheets %}
+        <!--Boostrap-->
         <link rel="stylesheet" href="{{ asset('/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('/css/bootstrap-theme.min.css') }}">
+        <!--Animated CSS for Notifications-->
+        <link rel="stylesheet" href="{{ asset('/css/animate.css') }}">
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 </head>
@@ -24,8 +27,29 @@
 </div>
 
 {% block javascripts %}
+    <!--JQUERY-->
     <script type="text/javascript" src="{{ asset('/js/jquery-3.2.0.min.js') }}"></script>
+    <!--Boostrap-->
     <script type="text/javascript" src="{{ asset('/js/bootstrap.min.js') }}"></script>
+    <!--Notifications-->
+    <script type="text/javascript" src="{{ asset('/js/bootstrap-notify.js') }}"></script>
+
+    <!--Notifications public function-->
+    <script>
+        var notification = {};
+        $(document).ready(function () {
+            notification = function (message, type = "info", timer = 2000) {
+                $.notifyClose();
+                $.notify({
+                    message: message
+                }, {
+                    type: type,
+                    timer: timer,
+                    newest_on_top: true
+                });
+            }
+        });
+    </script>
 {% endblock %}
 </body>
 </html>
