@@ -77,7 +77,7 @@
 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input id="newEmailText" type="email" class="form-control modal-text" placeholder="Email">
+                                        <input id="newEmailText" type="email" class="form-control" placeholder="Email">
                                     </div>
                                 </div>
 
@@ -87,7 +87,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="newPasswordText1" type="password" class="form-control modal-text" placeholder="Email">
+                                            <input id="newPasswordText1" type="password" class="form-control" placeholder="Email">
                                         </div>
                                     </div>
 
@@ -96,7 +96,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="newPasswordText2" type="password" class="form-control modal-text" placeholder="Email">
+                                            <input id="newPasswordText2" type="password" class="form-control" placeholder="Email">
                                         </div>
                                     </div>
                                 </div>
@@ -115,15 +115,6 @@
 
         </div>
     </div>
-    <div class="control-group error">
-        <label class="control-label" for="inputError">Input with error</label>
-
-        <div class="controls">
-            <input type="text" id="inputError">
-            <span class="help-inline">Please correct the error</span>
-        </div>
-    </div>
-    <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on left">Tooltip on left</button>
     <!--!End Modals-->
 {% endblock %}
 
@@ -138,8 +129,8 @@
         $(document).ready(function () {
             var $domains = JSON.parse('{{(domains|json_encode|raw)}}');
 
-            var $table = $('#table'), $remove = $('#remove'), selections = [];
-            $('#table').bootstrapTable({
+            var $table = $('#table');
+            $table.bootstrapTable({
                 columns: [{
                     field: 'id',
                     title: 'ID',
@@ -201,13 +192,14 @@
                 }
             });
 
-            $(".modal-text").focus(function () {
-                $(this).parent().parent().removeClass("has-error has-success");
-            });
 
-            $("#newEmailText").blur(function () {
-                checkEmail();
-            });
+            $("#newEmailText")
+                    .blur(function () {
+                        checkEmail();
+                    })
+                    .focus(function () {
+                        $(this).parent().parent().removeClass("has-error has-success");
+                    });
 
             function checkEmail() {
                 $("#newEmailTextGroup").find(".error-label").remove();
@@ -216,34 +208,42 @@
                     return true;
                 } else {
                     var labelError = '<label class="control-label error-label" for="newEmailText">' + error + '</label>'
-                    $("#newEmailTextGroup").append(labelError);
-                    $("#newEmailTextGroup").addClass("has-error");
+                    $("#newEmailTextGroup")
+                            .append(labelError)
+                            .addClass("has-error");
                     $("#newEmailText").after(errorGlyphicon);
                     return false;
                 }
             }
 
-            $("#newPasswordText2").blur(function () {
-                checkRepeatPassword();
-            });
-            $("#newPasswordText1").blur(function () {
-                checkRepeatPassword();
-            });
+            $("#newPasswordText1, #newPasswordText2")
+                    .blur(function () {
+                        checkRepeatPassword();
+                    })
+                    .focus(function () {
+                        $("#newPasswordText1, #newPasswordText2").parent().parent().removeClass("has-error has-success");
+                    });
+
 
             function checkRepeatPassword() {
                 $("#newPasswordTextGroup1").parent().find(".error-label").remove();
                 if ($("#newPasswordText1").val() == $("#newPasswordText2").val() && $("#newPasswordText1").val() != "") {
-                    $("#newPasswordTextGroup1").addClass("has-success");
-                    $("#newPasswordTextGroup2").addClass("has-success");
+                    $("#newPasswordTextGroup1, #newPasswordTextGroup2").addClass("has-success");
+                    return true;
                 } else {
-                    var labelError = '<label class="control-label error-label" for="newEmailText">Not is the same password!</label>'
-                    $("#newPasswordTextGroup1").addClass("has-error");
-                    $("#newPasswordTextGroup2").addClass("has-error");
-                    $("#newPasswordText1").after(errorGlyphicon);
-                    $("#newPasswordText2").after(errorGlyphicon);
+                    var labelError = '<label class="control-label error-label" for="newEmailText">Not is the same password!</label>';
+                    $("#newPasswordTextGroup1, #newPasswordTextGroup2").addClass("has-error");
+                    $("#newPasswordText1, #newPasswordText2").after(errorGlyphicon);
                     $("#newPasswordTextGroup2").append(labelError);
+                    return false;
                 }
             }
+
+            $('#addMailModal').on('hidden.bs.modal', function () {
+                $(this).find('input').val("");
+                $(this).find('.error-label').remove();
+                $(this).find('.has-error, .has-success').removeClass("has-error has-success");
+            });
 
 
             //Check domain
