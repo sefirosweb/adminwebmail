@@ -8,7 +8,7 @@
     {% block stylesheets %}
         <!--Boostrap-->
         <link rel="stylesheet" href="{{ asset('/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('/css/bootstrap-theme.min.css') }}">
+        <!--<link rel="stylesheet" href="{{ asset('/css/bootstrap-theme.min.css') }}">-->
         <!--Animated CSS for Notifications-->
         <link rel="stylesheet" href="{{ asset('/css/animate.css') }}">
     {% endblock %}
@@ -45,7 +45,8 @@
                 }, {
                     type: type,
                     timer: timer,
-                    newest_on_top: true
+                    newest_on_top: true,
+                    z_index: 2031,
                 });
             }
         });

@@ -13,32 +13,6 @@ class SecurityController extends Controller
             return $this->redirect($this->generateUrl('admin_web_mail_homepage'));
         }
 
-        /*$email = $request->get('inputEmail');
-        $password = $request->get('inputPassword');
-
-        //Salt from BBDD!
-        $salt = "SaltWebMail";
-        $password = crypt($password, sprintf('$6$' . $salt));
-
-        $user = $this->getDoctrine()
-            ->getRepository('AdminWebMailBundle:User')
-            ->findOneBy(array(
-                "username" => $email,
-                "password" => $password,
-                "admin" => 1
-            ));
-//
-        if($user){
-            $session = $request->getSession();
-            $session->set("id",$user->getId());
-            $session->set("username",$user->getUsername());
-        }else{
-            return $this->redirect($this->generateUrl('form_web_mail_homepage'));
-        }
-
-
-        die('<hr>died');*/
-
         $authenticationUtils = $this->get('security.authentication_utils');
 
         $error = $authenticationUtils->getLastAuthenticationError();

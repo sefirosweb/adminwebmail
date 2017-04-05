@@ -1,0 +1,20 @@
+get_users:
+    path:     /get
+    methods:  [GET]
+    defaults: { _controller: AdminWebMailBundle:Main:getUsersJSON }
+
+add_users:
+    path:     /add
+    methods:  [POST]
+    defaults: { _controller: AdminWebMailBundle:Main:getUsersJSON }
+
+update_users:
+    path:     /update
+    methods:  [PUT]
+    defaults: { _controller: AdminWebMailBundle:Main:getUsersJSON }
+
+delete_users:
+    path:     /delete
+    methods:  [DELETE]
+    defaults: { _controller: AdminWebMailBundle:Main:getUsersJSON }
+
