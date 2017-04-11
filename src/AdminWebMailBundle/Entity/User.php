@@ -27,7 +27,7 @@ class User
     private $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="user")
+     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="users")
      * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $domain;

@@ -73,7 +73,7 @@
 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input id="newEmailText" type="email" class="form-control" placeholder="Email">
+                                        <input id="newEmailText" type="email" class="form-control" placeholder="Email" value="testMail@sefirosweb.es">
                                     </div>
                                 </div>
 
@@ -83,7 +83,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="newPasswordText1" type="password" class="form-control" placeholder="Email">
+                                            <input id="newPasswordText1" type="password" class="form-control" placeholder="Email" value="1234">
                                         </div>
                                     </div>
 
@@ -92,7 +92,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="newPasswordText2" type="password" class="form-control" placeholder="Email">
+                                            <input id="newPasswordText2" type="password" class="form-control" placeholder="Email" value="1234">
                                         </div>
                                     </div>
                                 </div>
@@ -148,11 +148,9 @@
                             if ((error = checkDomain(value)) != "true") {
                                 return error;
                             }
-                            $table.bootstrapTable('showLoading');
                             var data = $table.bootstrapTable('getData'), index = $(this).parents('tr').data('index');
                             console.log(data[index]);
                             console.log("Added: " + value);
-                            $table.bootstrapTable('hideLoading');
                             return '';
                         }
                     },
@@ -176,18 +174,49 @@
             });
 
 
-            /*
-             * Modal checks
-             */
-
             var errorGlyphicon = '<span class="glyphicon glyphicon-remove form-control-feedback error-label"></span>';
 
+            /*
+             * New User
+             */
             $("#createMailBtn").click(function () {
                 if (checkEmail() && checkRepeatPassword()) {
-                    notify("AllOK");
+                    $table.bootstrapTable('showLoading');
+                    $('#addMailModal').modal('hide');
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "newEmailText": $("#newEmailText").val(),
+                            "newPasswordText1": $("#newPasswordText1").val(),
+                            "newPasswordText2": $("#newPasswordText2").val()
+                        },
+                        url: "{{ path('add_users') }}",
+                        dataType: "json",
+                        success: function (data) {
+                            notify("User created", "success");
+                            if (data["success"] == "true") {
+                                console.log(data);
+                            } else {
+                                notify("Error on create user", "danger");
+                                console.log(data);
+                            }
+                        },
+                        error: function (data) {
+                            notify("Error on create user", "danger");
+                            console.log(data);
+                        },
+                        complete: function () {
+                            $table.bootstrapTable('hideLoading');
+                        }
+                    });
+
                 }
             });
 
+
+            /*
+             * Modal checks
+             */
 
             $("#newEmailText")
                     .blur(function () {

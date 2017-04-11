@@ -4,7 +4,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\DateRepository")
+ * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\DomainRepository")
  * @ORM\Table(name="virtual_domains")
  */
 class Domain
