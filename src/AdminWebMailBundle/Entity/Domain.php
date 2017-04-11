@@ -50,14 +50,13 @@ class Domain
 
 
 
-
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->aliases = new ArrayCollection();
-        $this->users = new ArrayCollection();
+        $this->aliases = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

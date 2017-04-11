@@ -27,7 +27,7 @@ class Alias
     private $destination;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="alias")
+     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="aliases")
      * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $domain;

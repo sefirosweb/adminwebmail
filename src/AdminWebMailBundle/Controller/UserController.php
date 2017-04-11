@@ -24,6 +24,20 @@ class UserController extends Controller
         return new Response($data);
     }
 
+    private function getUserAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->createQueryBuilder()
+            ->select('u.id, u.email, d.id AS domain')
+            ->from('AdminWebMailBundle:User', 'u')
+            ->join('u.domain', 'd')
+            ->where('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+        return $user;
+    }
+
     public function addUserAction(Request $request)
     {
         $serializer = $this->container->get('serializer');
