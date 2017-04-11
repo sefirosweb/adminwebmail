@@ -193,12 +193,11 @@
                         url: "{{ path('add_users') }}",
                         dataType: "json",
                         success: function (data) {
-                            notify("User created", "success");
                             if (data["success"] == "true") {
+                                notify("User created", "success");
                                 console.log(data);
                             } else {
-                                notify("Error on create user", "danger");
-                                console.log(data);
+                                notify(data["error"], "danger");
                             }
                         },
                         error: function (data) {

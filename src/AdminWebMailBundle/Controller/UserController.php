@@ -42,20 +42,27 @@ class UserController extends Controller
 
         $email = $request->get('newEmailText');
         $pass1 = $request->get('newPasswordText1');
-        $pass2 = $request->get('newPasswordText1');
+        $pass2 = $request->get('newPasswordText2');
         $domain = explode("@", $email)[1];
 
         if ($pass1 != $pass2) {
-            $data = $serializer->serialize(array("success" => "false"), 'json');
+            $data = $serializer->serialize(array("success" => "false","error" => "Passwords don't match"), 'json');
             return new Response($data);
         }
-        $em = $this->getDoctrine()->getManager();
 
+        $em = $this->getDoctrine()->getManager();
+        $exists = $em->getRepository('AdminWebMailBundle:User')->findBy(array(
+            'email' => $email
+        ));
+
+        if ($exists) {
+            $data = $serializer->serialize(array("success" => "false","error" => "Email alredy exist"), 'json');
+            return new Response($data);
+        }
 
         $domain = $this->getDoctrine()
             ->getRepository("AdminWebMailBundle:Domain")
             ->findOneBy(array("name" => $domain));
-
 
         $user = new User();
         $user->setEmail($email);
@@ -64,7 +71,6 @@ class UserController extends Controller
 
         $em->persist($user);
         $em->flush();
-
 
         $data = $serializer->serialize(array("success" => "true", "user" => $this->getUserAction($user->getId())), 'json');
         return new Response($data);
