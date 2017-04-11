@@ -16,11 +16,9 @@ class UserController extends Controller
         $users = $em->createQueryBuilder()
             ->select('u.id, u.email, d.id AS domain')
             ->from('AdminWebMailBundle:User', 'u')
-            ->join('u.domain', 'd')
+            ->join('u.Domain', 'd')
             ->getQuery()->getArrayResult();
-
-        $serializer = $this->container->get('serializer');
-        $data = $serializer->serialize($users, 'json');
+        $data = $this->container->get('serializer')->serialize($users, 'json');
         return new Response($data);
     }
 
@@ -30,7 +28,7 @@ class UserController extends Controller
         $user = $em->createQueryBuilder()
             ->select('u.id, u.email, d.id AS domain')
             ->from('AdminWebMailBundle:User', 'u')
-            ->join('u.domain', 'd')
+            ->join('u.Domain', 'd')
             ->where('u.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
@@ -68,7 +66,7 @@ class UserController extends Controller
         $em->flush();
 
 
-        $data = $serializer->serialize(array("success" => "true", "user" => $user), 'json');
+        $data = $serializer->serialize(array("success" => "true", "user" => $this->getUserAction($user->getId())), 'json');
         return new Response($data);
     }
 

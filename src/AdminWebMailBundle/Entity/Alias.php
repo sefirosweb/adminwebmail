@@ -4,38 +4,43 @@ namespace AdminWebMailBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Alias
+ *
  * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\AliasRepository")
  * @ORM\Table(name="virtual_aliases")
  */
 class Alias
 {
     /**
-     * @ORM\Id
+     * @var int
+     *
      * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="source", type="string", length=100)
      */
     private $source;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="destination", type="string", length=100)
      */
     private $destination;
 
     /**
      * @ORM\ManyToOne(targetEntity="Domain", inversedBy="aliases")
-     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
+    private $Domain;
+
     private $domain;
-
-
-
-
-
 
 
 
@@ -115,9 +120,9 @@ class Alias
      *
      * @return Alias
      */
-    public function setDomain(\AdminWebMailBundle\Entity\Domain $domain = null)
+    public function setDomain(\AdminWebMailBundle\Entity\Domain $domain)
     {
-        $this->domain = $domain;
+        $this->Domain = $domain;
 
         return $this;
     }
@@ -129,6 +134,6 @@ class Alias
      */
     public function getDomain()
     {
-        return $this->domain;
+        return $this->Domain;
     }
 }

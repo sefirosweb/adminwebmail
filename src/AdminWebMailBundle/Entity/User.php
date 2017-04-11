@@ -4,33 +4,52 @@ namespace AdminWebMailBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\UserRepository")
+ * User
+ *
  * @ORM\Table(name="virtual_users")
+ * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\UserRepository")
  */
 class User
 {
     /**
-     * @ORM\Id
+     * @var int
+     *
      * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="password", type="string", length=106)
      */
     private $password;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="email", type="string", length=120)
      */
     private $email;
 
     /**
      * @ORM\ManyToOne(targetEntity="Domain", inversedBy="users")
-     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
+    private $Domain;
+
     private $domain;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -115,9 +134,9 @@ class User
      *
      * @return User
      */
-    public function setDomain(\AdminWebMailBundle\Entity\Domain $domain = null)
+    public function setDomain(\AdminWebMailBundle\Entity\Domain $domain)
     {
-        $this->domain = $domain;
+        $this->Domain = $domain;
 
         return $this;
     }
@@ -129,6 +148,6 @@ class User
      */
     public function getDomain()
     {
-        return $this->domain;
+        return $this->Domain;
     }
 }

@@ -1,23 +1,29 @@
 <?php
 namespace AdminWebMailBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Domain
+ *
  * @ORM\Entity(repositoryClass="AdminWebMailBundle\Repository\DomainRepository")
  * @ORM\Table(name="virtual_domains")
  */
 class Domain
 {
     /**
-     * @ORM\Id
+     * @var int
+     *
      * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=50)
      */
     private $name;
 
@@ -30,11 +36,6 @@ class Domain
      * @ORM\OneToMany(targetEntity="User", mappedBy="Domain")
      */
     private $users;
-
-
-
-
-
 
 
 
