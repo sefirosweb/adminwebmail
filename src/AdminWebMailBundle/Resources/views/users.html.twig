@@ -118,11 +118,21 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
+        window.operateEvents = {
+            'click .remove': function (e, value, row, index) {
+                $('#table').bootstrapTable('remove', {
+                    field: 'id',
+                    values: [row.id]
+                });
+            }
+        };
+
 
         $(document).ready(function () {
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+
             var $domains = JSON.parse('{{(domains|json_encode|raw)}}');
 
             var $table = $('#table');
@@ -170,9 +180,19 @@
                         }
                     },
                     align: 'center'
+                }, {
+                    field: 'operate',
+                    title: 'Item Operate',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return [
+                            '<a class="remove" href="#" title="Remove">' + row["id"] + '<i class="glyphicon glyphicon-remove"></i></a>'
+                        ]
+                    },
+                    events: operateEvents,
+
                 }]
             });
-
 
             var errorGlyphicon = '<span class="glyphicon glyphicon-remove form-control-feedback error-label"></span>';
 
@@ -195,7 +215,7 @@
                         success: function (data) {
                             if (data["success"] == "true") {
                                 notify("User created", "success");
-                                console.log(data);
+                                $table.bootstrapTable('prepend', data["user"]);
                             } else {
                                 notify(data["error"], "danger");
                             }
