@@ -76,4 +76,15 @@ class UserController extends Controller
         return new Response($data);
     }
 
+    public function deleteUserAction(Request $request){
+        $serializer = $this->container->get('serializer');
+        $id = $request->get('id');
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AdminWebMailBundle:User')->find($id);
+        $em->remove($user);
+        $em->flush();
+        $data = $serializer->serialize(array("success" => "true"), 'json');
+        return new Response($data);
+    }
+
 }

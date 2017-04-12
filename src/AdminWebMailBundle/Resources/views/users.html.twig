@@ -118,11 +118,36 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        var $table = $('#table');
+
         window.operateEvents = {
             'click .remove': function (e, value, row, index) {
-                $('#table').bootstrapTable('remove', {
-                    field: 'id',
-                    values: [row.id]
+                $table.bootstrapTable('showLoading');
+                $.ajax({
+                    type: "DELETE",
+                    data: {
+                        "id": row.id
+                    },
+                    url: "{{ path('delete_users') }}",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data["success"] == "true") {
+                            notify("User deleted", "warning");
+                            $table.bootstrapTable('remove', {
+                                field: 'id',
+                                values: [row.id]
+                            });
+                        } else {
+                            notify(data["error"], "danger");
+                        }
+                    },
+                    error: function (data) {
+                        notify("Error on delete user", "danger");
+                        console.log(data);
+                    },
+                    complete: function () {
+                        $table.bootstrapTable('hideLoading');
+                    }
                 });
             }
         };
@@ -135,7 +160,6 @@
 
             var $domains = JSON.parse('{{(domains|json_encode|raw)}}');
 
-            var $table = $('#table');
             $table.bootstrapTable({
                 columns: [{
                     field: 'id',
@@ -186,7 +210,7 @@
                     align: 'center',
                     formatter: function (value, row, index) {
                         return [
-                            '<a class="remove" href="#" title="Remove">' + row["id"] + '<i class="glyphicon glyphicon-remove"></i></a>'
+                            '<a class="remove" href="#" title="Remove"><i class="glyphicon glyphicon-remove"></i></a>'
                         ]
                     },
                     events: operateEvents,

@@ -16,5 +16,5 @@ update_users:
 delete_users:
     path:     /delete
     methods:  [DELETE]
-    defaults: { _controller: AdminWebMailBundle:User:getUsersJSON }
+    defaults: { _controller: AdminWebMailBundle:User:deleteUser }
 
