@@ -8,8 +8,18 @@ add_users:
     methods:  [POST]
     defaults: { _controller: AdminWebMailBundle:User:addUser }
 
-update_users:
-    path:     /update
+update_email_users:
+    path:     /update/email
+    methods:  [PUT]
+    defaults: { _controller: AdminWebMailBundle:User:updateEmailUser }
+
+update_domain_users:
+    path:     /update/domain
+    methods:  [PUT]
+    defaults: { _controller: AdminWebMailBundle:User:getUsersJSON }
+
+update_password_users:
+    path:     /update/domain
     methods:  [PUT]
     defaults: { _controller: AdminWebMailBundle:User:getUsersJSON }
 

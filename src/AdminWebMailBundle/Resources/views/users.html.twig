@@ -34,6 +34,7 @@
                    data-show-refresh="true"
                    data-show-toggle="true"
                    data-show-columns="true"
+                   data-unique-id="id"
 
                    data-show-export="true"
                    data-export-types="['txt','csv','excel','png','pdf']"
@@ -149,6 +150,9 @@
                         $table.bootstrapTable('hideLoading');
                     }
                 });
+            },
+            'click .password': function (e, value, row, index) {
+                console.log(row);
             }
         };
 
@@ -182,9 +186,34 @@
                             if ((error = checkDomain(value)) != "true") {
                                 return error;
                             }
-                            var data = $table.bootstrapTable('getData'), index = $(this).parents('tr').data('index');
-                            console.log(data[index]);
-                            console.log("Added: " + value);
+                            var dataUser = $table.bootstrapTable('getData'), index = $(this).parents('tr').data('index');
+                            var oldEmail = dataUser[index]["email"];
+
+                            $table.bootstrapTable('showLoading');
+                            $.ajax({
+                                type: "PUT",
+                                data: {
+                                    "id": dataUser[index]["id"],
+                                    "email": value
+                                },
+                                url: "{{ path('update_email_users') }}",
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data["success"] == "true") {
+                                        notify("Update successfully", "success");
+                                    } else {
+                                        notify(data["error"], "danger");
+                                        $table.bootstrapTable('updateByUniqueId', {id: dataUser[index]["id"], row: {email: oldEmail}});
+                                    }
+                                },
+                                error: function () {
+                                    notify("Error on update user", "danger");
+                                    $table.bootstrapTable('updateByUniqueId', {id: dataUser[index]["id"], row: {email: oldEmail}});
+                                },
+                                complete: function () {
+                                    $table.bootstrapTable('hideLoading');
+                                }
+                            });
                             return '';
                         }
                     },
@@ -210,6 +239,7 @@
                     align: 'center',
                     formatter: function (value, row, index) {
                         return [
+                            '<a class="password" href="#" title="Change Password"><i class="glyphicon glyphicon-lock"></i></a> ' +
                             '<a class="remove" href="#" title="Remove"><i class="glyphicon glyphicon-remove"></i></a>'
                         ]
                     },

@@ -87,4 +87,27 @@ class UserController extends Controller
         return new Response($data);
     }
 
+    public function updateEmailUserAction(Request $request){
+
+        $serializer = $this->container->get('serializer');
+        $id = $request->get('id');
+        $email = $request->get('email');
+        $em = $this->getDoctrine()->getManager();
+
+        $exists = $em->getRepository('AdminWebMailBundle:User')->findBy(array(
+            'email' => $email
+        ));
+        if ($exists) {
+            $data = $serializer->serialize(array("success" => "false","error" => "Email alredy exist"), 'json');
+            return new Response($data);
+        }
+
+        $user = $em->getRepository('AdminWebMailBundle:User')->find($id);
+        $user->setEmail($email);
+        $em->persist($user);
+        $em->flush();
+        $data = $serializer->serialize(array("success" => "true"), 'json');
+        return new Response($data);
+    }
+
 }
