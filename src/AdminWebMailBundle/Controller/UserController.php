@@ -46,7 +46,7 @@ class UserController extends Controller
         $domain = explode("@", $email)[1];
 
         if ($pass1 != $pass2) {
-            $data = $serializer->serialize(array("success" => "false","error" => "Passwords don't match"), 'json');
+            $data = $serializer->serialize(array("success" => "false", "error" => "Passwords don't match"), 'json');
             return new Response($data);
         }
 
@@ -56,7 +56,7 @@ class UserController extends Controller
         ));
 
         if ($exists) {
-            $data = $serializer->serialize(array("success" => "false","error" => "Email alredy exist"), 'json');
+            $data = $serializer->serialize(array("success" => "false", "error" => "Email alredy exist"), 'json');
             return new Response($data);
         }
 
@@ -76,7 +76,8 @@ class UserController extends Controller
         return new Response($data);
     }
 
-    public function deleteUserAction(Request $request){
+    public function deleteUserAction(Request $request)
+    {
         $serializer = $this->container->get('serializer');
         $id = $request->get('id');
         $em = $this->getDoctrine()->getManager();
@@ -87,36 +88,40 @@ class UserController extends Controller
         return new Response($data);
     }
 
-    public function updateEmailUserAction(Request $request){
-
+    public function updateEmailUserAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
         $serializer = $this->container->get('serializer');
         $id = $request->get('id');
         $email = $request->get('email');
-        $em = $this->getDoctrine()->getManager();
+        $domainName = explode("@", $email)[1];
 
-        $exists = $em->getRepository('AdminWebMailBundle:User')->findBy(array(
-            'email' => $email
-        ));
+
+        $exists = $em->getRepository('AdminWebMailBundle:User')->findOneBy(array('email' => $email));
+
         if ($exists) {
-            $data = $serializer->serialize(array("success" => "false","error" => "Email alredy exist"), 'json');
+            $data = $serializer->serialize(array("success" => "false", "error" => "Email alredy exist"), 'json');
             return new Response($data);
         }
 
         $user = $em->getRepository('AdminWebMailBundle:User')->find($id);
+        $domain = $em->getRepository('AdminWebMailBundle:Domain')->findOneBy(array("name" => $domainName));
         $user->setEmail($email);
+        $user->setDomain($domain);
         $em->persist($user);
         $em->flush();
-        $data = $serializer->serialize(array("success" => "true"), 'json');
+        $data = $serializer->serialize(array("success" => "true", "domainId" => $domain->getId()), 'json');
         return new Response($data);
     }
 
-    public function updatePasswordUserAction(Request $request){
+    public function updatePasswordUserAction(Request $request)
+    {
         $serializer = $this->container->get('serializer');
         $id = $request->get('id');
         $pass1 = $request->get('changePasswordText1');
         $pass2 = $request->get('changePasswordText2');
         if ($pass1 != $pass2) {
-            $data = $serializer->serialize(array("success" => "false","error" => "Passwords don't match"), 'json');
+            $data = $serializer->serialize(array("success" => "false", "error" => "Passwords don't match"), 'json');
             return new Response($data);
         }
 
@@ -126,6 +131,23 @@ class UserController extends Controller
         $em->persist($user);
         $em->flush();
 
+        $data = $serializer->serialize(array("success" => "true"), 'json');
+        return new Response($data);
+    }
+
+    public function updateDomainUserAction(Request $request)
+    {
+        $id = $request->get('id');
+        $idDomain = $request->get('domain');
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AdminWebMailBundle:User')->find($id);
+        $domain = $em->getRepository('AdminWebMailBundle:Domain')->find($idDomain);
+
+        $user->setDomain($domain);
+        $em->persist($user);
+        $em->flush();
+
+        $serializer = $this->container->get('serializer');
         $data = $serializer->serialize(array("success" => "true"), 'json');
         return new Response($data);
     }

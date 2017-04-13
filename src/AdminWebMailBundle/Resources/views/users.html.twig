@@ -251,6 +251,7 @@
                                 dataType: "json",
                                 success: function (data) {
                                     if (data["success"] == "true") {
+                                        $table.bootstrapTable('updateByUniqueId', {id: dataUser[index]["id"], row: {domain: data["domainId"]}});
                                         notify("Update successfully", "success");
                                     } else {
                                         notify(data["error"], "danger");
@@ -279,7 +280,35 @@
                         title: 'Email Address',
                         source: $domains,
                         validate: function (value) {
-                            console.log("Value inserted: " + value);
+
+                            var dataUser = $table.bootstrapTable('getData'), index = $(this).parents('tr').data('index');
+                            var oldDomain = dataUser[index]["domain"];
+
+                            $table.bootstrapTable('showLoading');
+                            $.ajax({
+                                type: "PUT",
+                                data: {
+                                    "id": dataUser[index]["id"],
+                                    "domain": value
+                                },
+                                url: "{{ path('update_domain_users') }}",
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data["success"] == "true") {
+                                        notify("Update successfully", "success");
+                                    } else {
+                                        notify(data["error"], "danger");
+                                        $table.bootstrapTable('updateByUniqueId', {id: dataUser[index]["id"], row: {domain: oldDomain}});
+                                    }
+                                },
+                                error: function () {
+                                    notify("Error on update domain", "danger");
+                                    $table.bootstrapTable('updateByUniqueId', {id: dataUser[index]["id"], row: {domain: oldDomain}});
+                                },
+                                complete: function () {
+                                    $table.bootstrapTable('hideLoading');
+                                }
+                            });
                             return '';
                         }
                     },
