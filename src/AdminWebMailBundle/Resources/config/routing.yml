@@ -7,12 +7,7 @@ security_logout:
 
 admin_web_mail_homepage:
     path:     /
-    defaults: { _controller: AdminWebMailBundle:Main:index }
-
-get_domains:
-    path:     /get/domains
-    defaults: { _controller: AdminWebMailBundle:Main:getDomainsJSON }
-
-get_aliases:
-    path:     /get/aliases
-    defaults: { _controller: AdminWebMailBundle:Main:getAliasesJSON }
+    defaults:
+          _controller: FrameworkBundle:Redirect:redirect
+          route: homepage_users
+          permanent: true

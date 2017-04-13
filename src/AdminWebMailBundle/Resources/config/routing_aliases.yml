@@ -1,0 +1,7 @@
+homepage_aliases:
+    path:     /
+    defaults: { _controller: AdminWebMailBundle:Main:aliases }
+
+get_aliases:
+    path:     /get
+    defaults: { _controller: AdminWebMailBundle:Alias:getAliasesJSON }

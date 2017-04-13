@@ -5,3 +5,11 @@ admin_web_mail:
 admin_web_mail_users:
     resource: "@AdminWebMailBundle/Resources/config/routing_users.yml"
     prefix:   /users/
+
+admin_web_mail_domains:
+    resource: "@AdminWebMailBundle/Resources/config/routing_domains.yml"
+    prefix:   /domains/
+
+admin_web_mail_aliases:
+    resource: "@AdminWebMailBundle/Resources/config/routing_aliases.yml"
+    prefix:   /aliases/

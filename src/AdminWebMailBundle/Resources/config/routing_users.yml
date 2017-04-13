@@ -1,3 +1,7 @@
+homepage_users:
+    path:     /
+    defaults: { _controller: AdminWebMailBundle:Main:users }
+
 get_users:
     path:     /get
     methods:  [GET]
@@ -27,4 +31,3 @@ delete_users:
     path:     /delete
     methods:  [DELETE]
     defaults: { _controller: AdminWebMailBundle:User:deleteUser }
-

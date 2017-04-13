@@ -3,13 +3,18 @@
 namespace AdminWebMailBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
 class MainController extends Controller
 {
-    public function indexAction()
+    public function usersAction()
     {
-        $domains_raw = $this->getDomains();
+        $em = $this->getDoctrine()->getManager();
+        $domains_raw = $em->createQueryBuilder()
+            ->select('d.id, d.name')
+            ->from('AdminWebMailBundle:Domain', 'd')
+            ->getQuery()
+            ->getResult();
+
         foreach ($domains_raw as $domain) {
             $domains[] = array(
                 "value" => $domain['id'],
@@ -19,40 +24,13 @@ class MainController extends Controller
         return $this->render('AdminWebMailBundle::users.html.twig', array('domains' => $domains));
     }
 
-    private function getDomains()
+    public function domainsAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        //$domains = $em->getRepository('AdminWebMailBundle:Domain')->findAll();
-        $domains = $em->createQueryBuilder()
-            ->select('d.id, d.name')
-            ->from('AdminWebMailBundle:Domain', 'd')
-            ->getQuery()
-            ->getResult();
-        return $domains;
+        return $this->render('AdminWebMailBundle::domains.html.twig');
     }
 
-    public function getDomainsJSONAction()
+    public function aliasesAction()
     {
-        $domains = $this->getDomains();
-        $serializer = $this->container->get('serializer');
-        $data = $serializer->serialize($domains, 'json');
-        return new Response($data);
+        return $this->render('AdminWebMailBundle::aliases.html.twig');
     }
-
-    public function getAliasesJSONAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        //$aliases = $em->getRepository('AdminWebMailBundle:Alias')->findAll();
-        $aliases = $em->createQueryBuilder()
-            ->select('a.id, a.source, a.destination')
-            ->from('AdminWebMailBundle:Alias', 'a')
-            ->getQuery()
-            ->getResult();
-
-        $serializer = $this->container->get('serializer');
-
-        $data = $serializer->serialize($aliases, 'json');
-        return new Response($data);
-    }
-
 }
