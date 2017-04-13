@@ -112,6 +112,55 @@
 
         </div>
     </div>
+
+    <!-- Modal change password -->
+    <div id="changePasswordModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="changePasswordModalTitle"></h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form>
+
+                                <div>
+                                    <div class="form-group" id="changePasswordTextGroup1">
+                                        <label class="control-label" for="changePasswordText1">Password</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                            <input id="changePasswordText1" type="password" class="form-control" placeholder="Email">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" id="changePasswordTextGroup2">
+                                        <label class="control-label" for="changePasswordText2">Repeat Password</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                            <input id="changePasswordText2" type="password" class="form-control" placeholder="Email">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" style="float:left;" id="changePasswordBtn">Change Password</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <!--!End Modals-->
 {% endblock %}
 
@@ -120,6 +169,7 @@
     {{ parent() }}
     <script>
         var $table = $('#table');
+        var idUserPassword;
 
         window.operateEvents = {
             'click .remove': function (e, value, row, index) {
@@ -152,10 +202,11 @@
                 });
             },
             'click .password': function (e, value, row, index) {
-                console.log(row);
+                idUserPassword = row["id"];
+                $('#changePasswordModalTitle').html('Change password for: ' + row['email']);
+                $('#changePasswordModal').modal('show');
             }
         };
-
 
         $(document).ready(function () {
             $(function () {
@@ -337,7 +388,8 @@
                 }
             }
 
-            $('#addMailModal').on('hidden.bs.modal', function () {
+
+            $('#addMailModal, #changePasswordModal').on('hidden.bs.modal', function () {
                 $(this).find('input').val("");
                 $(this).find('.error-label').remove();
                 $(this).find('.has-error, .has-success').removeClass("has-error has-success");
@@ -368,7 +420,68 @@
                 // Not domains found
                 return "Not valid domain entered";
             }
+
+
+            //Change password check
+            $("#changePasswordText1, #changePasswordText2")
+                    .blur(function () {
+                        checkChangePassword();
+                    })
+                    .focus(function () {
+                        $("#changePasswordText1, #changePasswordText2").parent().parent().removeClass("has-error has-success");
+                    });
+
+            function checkChangePassword() {
+                $("#changePasswordTextGroup1").parent().find(".error-label").remove();
+                if ($("#changePasswordText1").val() == $("#changePasswordText2").val() && $("#changePasswordText1").val() != "") {
+                    $("#changePasswordTextGroup1, #changePasswordTextGroup2").addClass("has-success");
+                    return true;
+                } else {
+                    var labelError = '<label class="control-label error-label" for="newEmailText">Not is the same password!</label>';
+                    $("#changePasswordTextGroup1, #changePasswordTextGroup2").addClass("has-error");
+                    $("#changePasswordText1, #changePasswordText2").after(errorGlyphicon);
+                    $("#changePasswordTextGroup2").append(labelError);
+                    return false;
+                }
+            }
+
+            /*
+             * Change Password button
+             */
+            $("#changePasswordBtn").click(function () {
+                if (checkChangePassword()) {
+                    $table.bootstrapTable('showLoading');
+                    $('#changePasswordModal').modal('hide');
+                    $.ajax({
+                        type: "PUT",
+                        data: {
+                            "id": idUserPassword,
+                            "changePasswordText1": $("#changePasswordText1").val(),
+                            "changePasswordText2": $("#changePasswordText2").val()
+                        },
+                        url: "{{ path('update_password_users') }}",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data["success"] == "true") {
+                                notify("Password changed successfully", "success");
+                            } else {
+                                notify(data["error"], "danger");
+                            }
+                        },
+                        error: function (data) {
+                            notify("Error on change password", "danger");
+                            console.log(data);
+                        },
+                        complete: function () {
+                            $table.bootstrapTable('hideLoading');
+                        }
+                    });
+
+                }
+            });
+
         });
+
 
     </script>
 {% endblock %}

@@ -66,7 +66,7 @@ class UserController extends Controller
 
         $user = new User();
         $user->setEmail($email);
-        $user->setPassword($pass1);
+        $user->setPassword(crypt($pass1, '$6$' . $this->container->getParameter('saltpassword')));
         $user->setDomain($domain);
 
         $em->persist($user);
@@ -106,6 +106,26 @@ class UserController extends Controller
         $user->setEmail($email);
         $em->persist($user);
         $em->flush();
+        $data = $serializer->serialize(array("success" => "true"), 'json');
+        return new Response($data);
+    }
+
+    public function updatePasswordUserAction(Request $request){
+        $serializer = $this->container->get('serializer');
+        $id = $request->get('id');
+        $pass1 = $request->get('changePasswordText1');
+        $pass2 = $request->get('changePasswordText2');
+        if ($pass1 != $pass2) {
+            $data = $serializer->serialize(array("success" => "false","error" => "Passwords don't match"), 'json');
+            return new Response($data);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AdminWebMailBundle:User')->find($id);
+        $user->setPassword(crypt($pass1, '$6$' . $this->container->getParameter('saltpassword')));
+        $em->persist($user);
+        $em->flush();
+
         $data = $serializer->serialize(array("success" => "true"), 'json');
         return new Response($data);
     }

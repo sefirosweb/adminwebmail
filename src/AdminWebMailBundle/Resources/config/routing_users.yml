@@ -19,9 +19,9 @@ update_domain_users:
     defaults: { _controller: AdminWebMailBundle:User:getUsersJSON }
 
 update_password_users:
-    path:     /update/domain
+    path:     /update/password
     methods:  [PUT]
-    defaults: { _controller: AdminWebMailBundle:User:getUsersJSON }
+    defaults: { _controller: AdminWebMailBundle:User:updatePasswordUser }
 
 delete_users:
     path:     /delete
