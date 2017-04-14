@@ -2,7 +2,9 @@
 
 namespace AdminWebMailBundle\Controller;
 
+use AdminWebMailBundle\Entity\Domain;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class DomainController extends Controller
@@ -26,6 +28,19 @@ class DomainController extends Controller
 
         $data = $this->container->get('serializer')->serialize($domains, 'json');
         return new Response($data);
+    }
+
+    private function getDomainById($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $domain = $em->createQueryBuilder()
+            ->select('d.id, d.name')
+            ->from('AdminWebMailBundle:Domain', 'd')
+            ->where('d.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+        return $domain;
     }
 
     private function getAliasesAgroupedAction()
@@ -86,5 +101,62 @@ class DomainController extends Controller
             }
         }
         return $grouped;
+    }
+
+    public function addDomainAction(Request $request)
+    {
+        $serializer = $this->container->get('serializer');
+        $domainName = $request->get('domainName');
+
+        $em = $this->getDoctrine()->getManager();
+        $exists = $em->getRepository('AdminWebMailBundle:Domain')->findBy(array(
+            'name' => $domainName
+        ));
+
+        if ($exists) {
+            $data = $serializer->serialize(array("success" => "false", "error" => "Domain alredy exist"), 'json');
+            return new Response($data);
+        }
+
+        $domain = new Domain();
+        $domain->setName($domainName);
+        $em->persist($domain);
+        $em->flush();
+
+        $data = $serializer->serialize(array("success" => "true", 'domain' => $this->getDomainById($domain->getId())), 'json');
+        return new Response($data);
+    }
+
+    public function deleteDomainAction(Request $request)
+    {
+        $id = $request->get('id');
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AdminWebMailBundle:Domain')->find($id);
+        $em->remove($user);
+        $em->flush();
+        $data = $this->container->get('serializer')->serialize(array("success" => "true"), 'json');
+        return new Response($data);
+    }
+
+    public function updateUpdateAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $serializer = $this->container->get('serializer');
+        $id = $request->get('id');
+        $domainName = $request->get('name');
+
+        $exists = $em->getRepository('AdminWebMailBundle:Domain')->findOneBy(array('name' => $domainName));
+
+        if ($exists) {
+            $data = $serializer->serialize(array("success" => "false", "error" => "Domain alredy exist"), 'json');
+            return new Response($data);
+        }
+
+        $domain = $em->getRepository('AdminWebMailBundle:Domain')->find($id);
+        $domain->setName($domainName);
+        $em->persist($domain);
+        $em->flush();
+        $data = $serializer->serialize(array("success" => "true"), 'json');
+        return new Response($data);
     }
 }

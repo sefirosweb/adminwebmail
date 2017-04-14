@@ -53,7 +53,7 @@
 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input id="newEmailText" type="email" class="form-control" placeholder="Email" value="testMail@sefirosweb.es">
+                                        <input id="newEmailText" type="email" class="form-control" placeholder="usermail@sefirosweb.es">
                                     </div>
                                 </div>
 
@@ -63,7 +63,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="newPasswordText1" type="password" class="form-control" placeholder="Email" value="1234">
+                                            <input id="newPasswordText1" type="password" class="form-control" placeholder="1234">
                                         </div>
                                     </div>
 
@@ -72,7 +72,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="newPasswordText2" type="password" class="form-control" placeholder="Email" value="1234">
+                                            <input id="newPasswordText2" type="password" class="form-control" placeholder="1234">
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="changePasswordText1" type="password" class="form-control" placeholder="Email">
+                                            <input id="changePasswordText1" type="password" class="form-control" placeholder="1234">
                                         </div>
                                     </div>
 
@@ -121,7 +121,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                            <input id="changePasswordText2" type="password" class="form-control" placeholder="Email">
+                                            <input id="changePasswordText2" type="password" class="form-control" placeholder="1234">
                                         </div>
                                     </div>
                                 </div>
@@ -299,8 +299,7 @@
                             '<a class="remove" href="#" title="Remove"><i class="glyphicon glyphicon-remove"></i></a>'
                         ]
                     },
-                    events: operateEvents,
-
+                    events: operateEvents
                 }]
             });
 
@@ -393,7 +392,8 @@
             }
 
 
-            $('#addMailModal, #changePasswordModal').on('hidden.bs.modal', function () {
+            //Clear Modals
+            $('.modal').on('hidden.bs.modal', function () {
                 $(this).find('input').val("");
                 $(this).find('.error-label').remove();
                 $(this).find('.has-error, .has-success').removeClass("has-error has-success");

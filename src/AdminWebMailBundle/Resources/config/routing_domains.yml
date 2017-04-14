@@ -6,6 +6,18 @@ get_domains:
     path:     /get
     defaults: { _controller: AdminWebMailBundle:Domain:getDomainsJSON }
 
-get_domains_test:
-    path:     /users
-    defaults: { _controller: AdminWebMailBundle:Domain:getUsers }
+add_domains:
+    path:     /add
+    methods:  [POST]
+    defaults: { _controller: AdminWebMailBundle:Domain:addDomain }
+
+
+delete_domains:
+    path:     /delete
+    methods:  [DELETE]
+    defaults: { _controller: AdminWebMailBundle:Domain:deleteDomain }
+
+update_domains:
+    path:     /update
+    methods:  [PUT]
+    defaults: { _controller: AdminWebMailBundle:Domain:updateUpdate }
