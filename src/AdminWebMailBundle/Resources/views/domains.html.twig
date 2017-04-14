@@ -2,12 +2,159 @@
 
 {% block body %}
     <h1>Domains</h1>
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="toolbar" disabled="disabled">
+                <button class="btn btn-success" data-toggle="modal" data-target="#addMailModal">Add Mail</button>
+            </div>
+            <table id="table"
+                   data-toolbar="#toolbar"
+                   data-search="true"
+                   data-show-refresh="true"
+                   data-show-toggle="true"
+                   data-show-columns="true"
+                   data-detail-view="true"
+                   data-unique-id="id"
 
+                   data-show-export="true"
+                   data-export-types="['txt','csv','excel','png','pdf']"
+                   data-export-data-type="all"
+
+                   data-minimum-count-columns="1"
+                   data-show-pagination-switch="true"
+                   data-pagination="true"
+                   data-id-field="id"
+                   data-page-list="[10, 25, 50, 100, ALL]"
+                   data-show-footer="false"
+                   data-url="{{ path('get_domains') }}"
+            >
+            </table>
+        </div>
+    </div>
 {% endblock %}
 
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        var $table = $('#table');
+        var $users = JSON.parse('{{(users|json_encode|raw)}}');
+        var $aliases = JSON.parse('{{(aliases|json_encode|raw)}}');
 
+        $(document).ready(function () {
+            console.log($users);
+            console.log($aliases);
+
+            $table.bootstrapTable({
+                columns: [{
+                    field: 'id',
+                    title: 'ID',
+                    sortable: true,
+                    align: 'center',
+                    visible: false
+                }, {
+                    field: 'name',
+                    title: 'Domain',
+                    sortable: true,
+                    editable: {
+                        type: 'text',
+                        title: 'Email Address',
+                        validate: function (value) {
+                            value = $.trim(value);
+
+                            return '';
+                        }
+                    },
+                    align: 'center'
+                }],
+                onExpandRow: function (index, row, $subTable) {
+                    subTableBuild($subTable.html('<table></table>').find('table'), row['id']);
+                }
+            });
+
+            function subTableBuild($subTable, $idDomain) {
+                var row, columns = [], data = [];
+                columns.push({
+                    field: 'select',
+                    title: 'Search Aliases or Users'
+                });
+
+                data.push({
+                    select: 'Users'
+                });
+                data.push({
+                    select: 'Aliases'
+                });
+
+                //row = {};
+                //row['select'] = 'Aliases';
+                //data.push(row);
+
+                $subTable.bootstrapTable({
+                    columns: columns,
+                    data: data,
+                    detailView: true,
+                    onExpandRow: function (index, row, $subTable) {
+                        if (row['select'] == 'Aliases') {
+                            subTableAliases($subTable.html('<table></table>').find('table'), $idDomain);
+                        } else if (row['select'] == 'Users') {
+                            subTableUsers($subTable.html('<table></table>').find('table'), $idDomain);
+                        }
+                    }
+                });
+            }
+
+            function subTableUsers($subTable, $idDomain) {
+                var columns = [], data = [];
+                columns.push({
+                    field: 'email',
+                    title: 'Email',
+                    sortable: true
+                });
+
+                if (typeof $users[$idDomain] !== 'undefined') {
+                    for (var x = 0, xlen = $users[$idDomain].length; x < xlen; x++) {
+                        data.push({
+                            email: $users[$idDomain][x]['email']
+                        });
+                    }
+                }
+
+                $subTable.bootstrapTable({
+                    columns: columns,
+                    data: data
+                });
+            }
+
+            function subTableAliases($subTable, $idDomain) {
+                var columns = [], data = [];
+                columns.push({
+                    field: 'source',
+                    title: 'Source',
+                    sortable: true
+                });
+                columns.push({
+                    field: 'destination',
+                    title: 'Destination',
+                    sortable: true
+                });
+
+                if (typeof $aliases[$idDomain] !== 'undefined') {
+                    for (var x = 0, xlen = $aliases[$idDomain].length; x < xlen; x++) {
+                        data.push({
+                            source: $aliases[$idDomain][x]['source'],
+                            destination: $aliases[$idDomain][x]['destination'],
+                        });
+                    }
+                }
+
+                $subTable.bootstrapTable({
+                    columns: columns,
+                    data: data
+                });
+            }
+
+        });
+    </script>
 {% endblock %}
 

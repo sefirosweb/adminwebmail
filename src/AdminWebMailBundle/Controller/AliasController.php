@@ -7,6 +7,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AliasController extends Controller
 {
+    public function indexAction()
+    {
+        return $this->render('AdminWebMailBundle::aliases.html.twig');
+    }
+
     public function getAliasesJSONAction()
     {
         $em = $this->getDoctrine()->getManager();
@@ -16,8 +21,7 @@ class AliasController extends Controller
             ->getQuery()
             ->getResult();
 
-        $serializer = $this->container->get('serializer');
-        $data = $serializer->serialize($aliases, 'json');
+        $data = $this->container->get('serializer')->serialize($aliases, 'json');
         return new Response($data);
     }
 }

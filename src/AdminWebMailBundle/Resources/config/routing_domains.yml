@@ -1,7 +1,11 @@
 homepage_domains:
     path:     /
-    defaults: { _controller: AdminWebMailBundle:Main:domains }
+    defaults: { _controller: AdminWebMailBundle:Domain:index }
 
 get_domains:
     path:     /get
     defaults: { _controller: AdminWebMailBundle:Domain:getDomainsJSON }
+
+get_domains_test:
+    path:     /users
+    defaults: { _controller: AdminWebMailBundle:Domain:getUsers }

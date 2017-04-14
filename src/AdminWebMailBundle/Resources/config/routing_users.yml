@@ -1,6 +1,6 @@
 homepage_users:
     path:     /
-    defaults: { _controller: AdminWebMailBundle:Main:users }
+    defaults: { _controller: AdminWebMailBundle:User:index }
 
 get_users:
     path:     /get

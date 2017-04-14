@@ -9,6 +9,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    public function indexAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $domains_raw = $em->createQueryBuilder()
+            ->select('d.id, d.name')
+            ->from('AdminWebMailBundle:Domain', 'd')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($domains_raw as $domain) {
+            $domains[] = array(
+                "value" => $domain['id'],
+                "text" => $domain['name']
+            );
+        }
+        return $this->render('AdminWebMailBundle::users.html.twig', array('domains' => $domains));
+    }
+
     public function getUsersJSONAction()
     {
         $em = $this->getDoctrine()->getManager();
@@ -78,13 +96,12 @@ class UserController extends Controller
 
     public function deleteUserAction(Request $request)
     {
-        $serializer = $this->container->get('serializer');
         $id = $request->get('id');
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AdminWebMailBundle:User')->find($id);
         $em->remove($user);
         $em->flush();
-        $data = $serializer->serialize(array("success" => "true"), 'json');
+        $data = $this->container->get('serializer')->serialize(array("success" => "true"), 'json');
         return new Response($data);
     }
 
@@ -147,8 +164,7 @@ class UserController extends Controller
         $em->persist($user);
         $em->flush();
 
-        $serializer = $this->container->get('serializer');
-        $data = $serializer->serialize(array("success" => "true"), 'json');
+        $data = $this->container->get('serializer')->serialize(array("success" => "true"), 'json');
         return new Response($data);
     }
 
