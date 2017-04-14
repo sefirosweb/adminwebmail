@@ -13,3 +13,4 @@ parameters:
     mailer_password: null
     secret: ThisTokenIsNotSoSecretChangeIt
     saltpassword: SaltPassword
+    admin_password: 1234

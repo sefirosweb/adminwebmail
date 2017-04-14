@@ -5,3 +5,13 @@ homepage_aliases:
 get_aliases:
     path:     /get
     defaults: { _controller: AdminWebMailBundle:Alias:getAliasesJSON }
+
+add_aliases:
+    path:     /add
+    methods:  [POST]
+    defaults: { _controller: AdminWebMailBundle:Alias:addAlias }
+
+delete_aliases:
+    path:     /delete
+    methods:  [DELETE]
+    defaults: { _controller: AdminWebMailBundle:Alias:deleteAlias }

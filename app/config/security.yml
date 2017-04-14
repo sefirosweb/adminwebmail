@@ -10,7 +10,7 @@ security:
             memory:
                 users:
                     admin:
-                        password: 1234
+                        password: '%admin_password%'
                         roles: 'ROLE_ADMIN'
 
 
