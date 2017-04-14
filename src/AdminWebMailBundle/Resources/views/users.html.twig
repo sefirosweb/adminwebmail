@@ -1,26 +1,5 @@
 {% extends 'AdminWebMailBundle::base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-
-    <style>
-        /* Tooltip */
-        .tooltip > .tooltip-inner {
-            background-color: #f2dede;
-            color: #a94442;
-            border: 1px solid #ebccd1;
-            padding: 10px;
-            font-size: 15px;
-        }
-
-        /* Tooltip on top */
-        .tooltip.top > .tooltip-arrow {
-            border-top: 5px solid #ebccd1;
-        }
-
-    </style>
-{% endblock %}
-
 {% block body %}
     <h1>Users</h1>
     <div class="row">
@@ -208,11 +187,8 @@
             }
         };
 
-        $(document).ready(function () {
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
-            });
 
+        $(document).ready(function () {
             var $domains = JSON.parse('{{(domains|json_encode|raw)}}');
 
             $table.bootstrapTable({
@@ -377,6 +353,7 @@
                     })
                     .focus(function () {
                         $(this).parent().parent().removeClass("has-error has-success");
+                        $("#newEmailText").popover('hide');
                     });
 
             function checkEmail() {
@@ -385,10 +362,8 @@
                     $("#newEmailTextGroup").addClass("has-success");
                     return true;
                 } else {
-                    var labelError = '<label class="control-label error-label" for="newEmailText">' + error + '</label>'
-                    $("#newEmailTextGroup")
-                            .append(labelError)
-                            .addClass("has-error");
+                    $("#newEmailTextGroup").addClass("has-error");
+                    popoverShow('newEmailText', error, 'top', 'danger');
                     $("#newEmailText").after(errorGlyphicon);
                     return false;
                 }
@@ -400,6 +375,7 @@
                     })
                     .focus(function () {
                         $("#newPasswordText1, #newPasswordText2").parent().parent().removeClass("has-error has-success");
+                        $("#newPasswordText1").popover('hide');
                     });
 
 
@@ -409,10 +385,9 @@
                     $("#newPasswordTextGroup1, #newPasswordTextGroup2").addClass("has-success");
                     return true;
                 } else {
-                    var labelError = '<label class="control-label error-label" for="newEmailText">Not is the same password!</label>';
                     $("#newPasswordTextGroup1, #newPasswordTextGroup2").addClass("has-error");
                     $("#newPasswordText1, #newPasswordText2").after(errorGlyphicon);
-                    $("#newPasswordTextGroup2").append(labelError);
+                    popoverShow('newPasswordText1', 'Not is the same password!', 'top', 'danger');
                     return false;
                 }
             }
@@ -422,6 +397,7 @@
                 $(this).find('input').val("");
                 $(this).find('.error-label').remove();
                 $(this).find('.has-error, .has-success').removeClass("has-error has-success");
+                $(this).find('.popover').popover('hide');
             });
 
 
@@ -458,6 +434,7 @@
                     })
                     .focus(function () {
                         $("#changePasswordText1, #changePasswordText2").parent().parent().removeClass("has-error has-success");
+                        $("#changePasswordText1").popover('hide');
                     });
 
             function checkChangePassword() {
@@ -466,10 +443,9 @@
                     $("#changePasswordTextGroup1, #changePasswordTextGroup2").addClass("has-success");
                     return true;
                 } else {
-                    var labelError = '<label class="control-label error-label" for="newEmailText">Not is the same password!</label>';
                     $("#changePasswordTextGroup1, #changePasswordTextGroup2").addClass("has-error");
                     $("#changePasswordText1, #changePasswordText2").after(errorGlyphicon);
-                    $("#changePasswordTextGroup2").append(labelError);
+                    popoverShow('changePasswordText1', 'Not is the same password!', 'top', 'danger');
                     return false;
                 }
             }

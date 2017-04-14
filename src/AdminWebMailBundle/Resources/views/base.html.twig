@@ -18,6 +18,9 @@
         <!--Editable POPUP-->
         <link rel="stylesheet" href="{{ asset('/css/bootstrap-editable.css') }}">
 
+        <!--Popover CSS Style-->
+        <link rel="stylesheet" href="{{ asset('/css/popover.css') }}">
+
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 </head>
@@ -58,11 +61,21 @@
     <script type="text/javascript" src="{{ asset('/js/tableExport.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/bootstrap-table-export.js') }}"></script>
 
+    <!--Popover CSS Style-->
+    <script type="text/javascript" src="{{ asset('/js/popover.js') }}"></script>
+
     <!--Notifications public function-->
     <script>
         var notify = {};
         $(document).ready(function () {
-            notify = function (message, type = "info", timer = 2000) {
+            notify = function (message, type, timer) {
+                if (timer === undefined) {
+                    timer = 2000;
+                }
+                if (type === undefined) {
+                    type = "info";
+                }
+
                 $.notifyClose();
                 $.notify({
                     message: message
@@ -70,7 +83,7 @@
                     type: type,
                     timer: timer,
                     newest_on_top: true,
-                    z_index: 2031,
+                    z_index: 2031
                 });
             }
         });
